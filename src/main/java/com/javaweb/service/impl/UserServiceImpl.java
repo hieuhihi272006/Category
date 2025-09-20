@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService{
 	private final JwtTokenUtil jwtTokenUtil;
 	
 	@Override
-	public void createUser(UserDTO userDTO) throws Exception{
+	public void register(UserDTO userDTO) throws Exception{
 		// TODO Auto-generated method stub
 		String phoneNumber = userDTO.getPhoneNumber();
 		if(userRepository.existsByPhoneNumber(phoneNumber)) {
@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService{
 		newUser.setPassword(encoderPassword);
 		userRepository.save(newUser);
 	}
-
 	
 	@Override
 	public String loginUser(UserLoginDTO userLogin) throws Exception{

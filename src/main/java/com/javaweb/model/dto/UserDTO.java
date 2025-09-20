@@ -16,7 +16,7 @@ public class UserDTO {
 	private String name ;
 	
 	@NotBlank(message = "Phone number can not be blank")
-	private String phoneNumber;
+	private String phoneNumber;	
 	
 	@NotBlank(message = "Password can not be blank")
 	private String password;

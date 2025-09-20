@@ -4,6 +4,6 @@ import com.javaweb.model.dto.UserDTO;
 import com.javaweb.model.dto.UserLoginDTO;
 
 public interface UserService {
-	void createUser(UserDTO userDTO) throws Exception;
+	void register(UserDTO userDTO) throws Exception;
 	String loginUser(UserLoginDTO userLogin) throws Exception;
 }

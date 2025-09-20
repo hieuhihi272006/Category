@@ -12,7 +12,7 @@ public class ProductSpecs {
 		return (root , query , cb) ->{
 			List<Predicate> predicates = new ArrayList<>();
 			if(product.getName() != null) {
-				predicates.add(cb.like(root.get("name") , "%" + product.getName() + "%"));
+				predicates.add(cb.like(root.get("name"), "%" +  product.getName() + "%"));
 			}
 			if(product.getPriceFrom() != null) {
 				predicates.add(cb.greaterThanOrEqualTo(root.get("price"), product.getPriceFrom()));
@@ -30,9 +30,13 @@ public class ProductSpecs {
 				predicates.add(cb.like(root.get("productCode") , "%" + product.getCode() + "%"));
 			}
 			return cb.and(predicates.toArray(new Predicate[0]));
+		};	
+	}
+	public static Specification<ProductEntity> test(String code) {
+		return (root , query , cb) -> {
+			List<Predicate> predicates = new ArrayList<>();
+			predicates.add(cb.like(root.get("productCode") , code));
+			return cb.and(predicates.toArray(new Predicate[0]));
 		};
 	}
-	
-
-
 }

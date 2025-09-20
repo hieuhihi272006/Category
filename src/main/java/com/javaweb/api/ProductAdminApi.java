@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,8 +30,9 @@ import com.javaweb.repository.*;
 import com.javaweb.service.ProductService;
 import jakarta.validation.Valid;
 
+
 @RestController
-@RequestMapping("api/admin_grocary")
+@RequestMapping("api/admin_grocery")
 public class ProductAdminApi {
 	
 	@Autowired
@@ -73,7 +75,7 @@ public class ProductAdminApi {
 	public ResponseEntity<?> createSupplier(@Valid @RequestBody SupplierEntity supplier ,
 									BindingResult result){
 		if(result.hasErrors()) {
-			List<String> errors = result.getFieldErrors().stream().map(FieldError::getDefaultMessage).toList();
+			List<String> errors = result.getFieldErrors().stream().map(FieldError :: getDefaultMessage).toList();
 			return ResponseEntity.badRequest().body(errors);
 		}
 

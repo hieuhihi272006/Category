@@ -40,16 +40,16 @@ public class ProductConverter {
 		}
 	}
 	
-	public ProductBuilder toProductBuilder(Map<String , Object> params , List<Integer> brands) {
-		ProductBuilder productBuilder =  ProductBuilder.builder()
-															.name(MapUtil.getObject(params,"name",String.class))
-															.rating(MapUtil.getObject(params,"rating",Integer.class))
-															.priceFrom(MapUtil.getObject(params,"priceFrom",Long.class))
-															.priceTo(MapUtil.getObject(params,"priceTo",Long.class))
-															.code(MapUtil.getObject(params, "code", String.class))
-															.brands(brands)
-															.build();								
-		return productBuilder;
+	public ProductBuilder toProductBuilder(Map<String,Object> params , List<Integer> brands) {
+		ProductBuilder result = ProductBuilder.builder()
+														.name(MapUtil.getObject(params, "name" , String.class))
+														.rating(MapUtil.getObject(params, "rating", Integer.class))
+														.priceFrom(MapUtil.getObject(params, "priceFrom", Long.class))
+														.priceTo(MapUtil.getObject(params, "priceTo", Long.class))
+														.code(MapUtil.getObject(params, "code", String.class))
+														.brands(brands)
+														.build();
+		return result;
 	}
 
 	public List<ProductResponse> toProductResponse(List<ProductEntity> listProductEntity){

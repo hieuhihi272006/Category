@@ -46,7 +46,7 @@ public class ProductEntity {
 	private BrandEntity brand;
 	
 	@Builder.Default
-	@OneToMany(mappedBy = "product" , fetch = FetchType.LAZY ,cascade =  {CascadeType.PERSIST , CascadeType.MERGE } , orphanRemoval = true )
+	@OneToMany(mappedBy = "product" , fetch = FetchType.LAZY ,cascade =  {CascadeType.PERSIST , CascadeType.MERGE , CascadeType.REMOVE} , orphanRemoval = true )
 	private List<ProductVariantEntity> productVariants = new ArrayList<>();
 	
 }

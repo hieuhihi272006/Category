@@ -17,4 +17,6 @@ public interface ProductService {
 	void addProducts(List<ImportDetailDTO> importDTO);
 	List<ImportDetailResponse> historyImport(LocalDate startDate , LocalDate endDate);
 	void editProduct(ProductResponse product);
+	
+
 }

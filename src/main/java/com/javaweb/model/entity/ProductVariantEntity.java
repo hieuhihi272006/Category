@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -51,6 +52,6 @@ public class ProductVariantEntity {
 	private ColorEntity color;
 	
 	@Builder.Default
-	@OneToMany(mappedBy="variant" , fetch =FetchType.LAZY)
+	@OneToMany(mappedBy="variant" , fetch =FetchType.LAZY ,cascade =  {CascadeType.PERSIST , CascadeType.MERGE , CascadeType.REMOVE} , orphanRemoval = true )
 	private List<ImportDetailEntity> importDetails = new ArrayList<>();
 }

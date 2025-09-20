@@ -88,8 +88,12 @@ public class ProductServiceImpl implements ProductService{
 		Map<Integer , Object> size = new HashMap<>();
 		try {
 			ProductEntity product = productRepository.findByProductCode(code).orElseThrow(() -> new RuntimeException());
+//			ProductEntity product = productRepository.findOne(ProductSpecs.test(code)).orElseThrow(() -> new RuntimeException());
 			// TODO Auto-generated method stub
 			result.put("name", product.getName());
+			if(product.getProductVariants().isEmpty()) {
+				throw new RuntimeException("");
+			}
 			for (ProductVariantEntity it : product.getProductVariants()) {
 		        if (it.getSize() != null) {
 		               size.put(it.getSize().getId(), it.getSize().getName());  
@@ -130,7 +134,6 @@ public class ProductServiceImpl implements ProductService{
 		for(ImportDetailDTO it : importDTOs) {
 			SupplierEntity supplier = supplierRepository.findById(it.getSupplierId());
 			Optional<ProductEntity> product = productRepository.findByProductCode(it.getProductCode());
-
 			if(product.isPresent()) {
 				List<ProductVariantEntity> variants = product.get().getProductVariants();
 				boolean check = false;
@@ -225,4 +228,5 @@ public class ProductServiceImpl implements ProductService{
 		newProduct.setBrand(brand);
 		productRepository.save(newProduct);
 	}
+
 }

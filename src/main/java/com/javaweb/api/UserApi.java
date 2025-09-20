@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +18,12 @@ import com.javaweb.service.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/grocary")
+@RequestMapping("/api/grocery")
 public class UserApi {
 	@Autowired
 	private UserService userService;
 	
-	@PostMapping(value = "/create_user")
+	@PostMapping(value = "/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO , BindingResult result){
 		try {
 			if(result.hasErrors()) {
@@ -32,7 +33,7 @@ public class UserApi {
 			if(!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
 				return ResponseEntity.badRequest().body("Password not match");
 			}
-			userService.createUser(userDTO);
+			userService.register(userDTO);
 			return ResponseEntity.ok("Create account access");
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

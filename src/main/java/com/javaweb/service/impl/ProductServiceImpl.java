@@ -184,7 +184,6 @@ public class ProductServiceImpl implements ProductService{
 																   .build();
 				productVariantRepository.save(variant);
 				importDetailRepository.save(productConverter.toImportDetail(it,variant,supplier,importReceipt));
-
 			}
 		}
 		

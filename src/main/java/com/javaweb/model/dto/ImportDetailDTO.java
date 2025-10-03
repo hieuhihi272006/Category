@@ -19,7 +19,7 @@ public class ImportDetailDTO {
 	
 	@JsonProperty("product_code")
 	private String productCode;
-	
+		
 	@NotBlank(message="Name product is required")
 	private String name;
 	

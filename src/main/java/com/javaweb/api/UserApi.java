@@ -18,6 +18,7 @@ import com.javaweb.service.UserService;
 import jakarta.validation.Valid;
 
 @RestController
+//@CrossOrigin("http://localhost:5175")
 @RequestMapping("/api/grocery")
 public class UserApi {
 	@Autowired
@@ -46,7 +47,7 @@ public class UserApi {
 			String token = userService.loginUser(userLogin);
 			return ResponseEntity.ok(token);
 		}catch(Exception e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());	
 		}
 	}
 }

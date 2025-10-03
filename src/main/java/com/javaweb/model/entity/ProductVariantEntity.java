@@ -39,6 +39,9 @@ public class ProductVariantEntity {
 	@Column(name="price")
 	private BigDecimal price;
 	
+	@Column(name="image_url")
+	private String image;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="product_id")
 	private ProductEntity product;
@@ -54,4 +57,6 @@ public class ProductVariantEntity {
 	@Builder.Default
 	@OneToMany(mappedBy="variant" , fetch =FetchType.LAZY ,cascade =  {CascadeType.PERSIST , CascadeType.MERGE , CascadeType.REMOVE} , orphanRemoval = true )
 	private List<ImportDetailEntity> importDetails = new ArrayList<>();
+	
+
 }

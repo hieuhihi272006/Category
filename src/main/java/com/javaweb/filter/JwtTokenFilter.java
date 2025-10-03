@@ -12,8 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -42,8 +40,8 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 		final List<Pair<String,String>> byPassTokens = Arrays.asList(
 				Pair.of(String.format("%s/login", prefix), "POST"),
 				Pair.of(String.format("%s/register", prefix), "POST"),
-				Pair.of(String.format("%s/search", prefix), "GET"),
-				Pair.of(String.format("%s/detailProduct", prefix),"GET")
+				Pair.of(String.format("%s/products", prefix), "GET"),
+				Pair.of(String.format("%s/product/", prefix),"GET")
 				
 				);
 		for(Pair<String,String> byPassToken : byPassTokens) {

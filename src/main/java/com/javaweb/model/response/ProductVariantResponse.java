@@ -14,7 +14,8 @@ public class ProductVariantResponse {
 	private BigDecimal price ;
 	@NotNull(message="Quantity is required")
 	private Integer quantity;
+	private String image;
 	private Map<String,Object> colors;
 	private Map<String,Object> sizes;
-
+	
 }

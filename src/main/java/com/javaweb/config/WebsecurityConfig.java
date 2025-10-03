@@ -33,11 +33,19 @@ public class WebsecurityConfig {
 				.authorizeHttpRequests(request -> {
 					request
 							.requestMatchers(GET ,
-									String.format("%s/search", prefix)).permitAll()
+									String.format("%s/products", prefix)).permitAll()
 							.requestMatchers(POST , 
 									String.format("%s/login", prefix)).permitAll()
+							.requestMatchers(POST,
+									String.format("%s/register", prefix)).permitAll()
+							.requestMatchers(GET , 
+									String.format("%s/product/**", prefix)).permitAll()
 							.requestMatchers(GET ,
-									String.format("%s/show_size", adminPrefix)).hasAnyRole("ADMIN").anyRequest().authenticated();		
+									String.format("%s/sizes", adminPrefix)).hasAnyRole("ADMIN")
+							.requestMatchers(POST,
+									String.format("%s/products/imports",adminPrefix)).hasAnyRole("ADMIN")
+							.requestMatchers(DELETE,
+									String.format("%s/product", adminPrefix)).hasAnyRole("ADMIN").anyRequest().authenticated();
 				});
 		return http.build();
 	}

@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,12 +36,17 @@ public class ProductEntity {
 	private BigDecimal price;
 	@Column(name = "quantity")
 	private Integer quantity;
-	@Column(name = "created_at")
-	private Date created_at;
+	
+//	@CreatedDate
+//	@Column(name = "created_at")
+//	private Date created_at;
+	
 	@Column(name="discount")
 	private Integer discount;
 	@Column(name="product_code")
 	private String productCode;
+	@Column(name="image_url")
+	private String imageUrl;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")

@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,9 +29,8 @@ import com.javaweb.repository.*;
 import com.javaweb.service.ProductService;
 import jakarta.validation.Valid;
 
-
 @RestController
-@RequestMapping("api/admin_grocery")
+@RequestMapping("/api/admin")
 public class ProductAdminApi {
 	
 	@Autowired
@@ -48,19 +46,31 @@ public class ProductAdminApi {
 	@Autowired 
 	private BrandRepository brandRepository;
 
-	@GetMapping(value = "/show_size")
+//	=============size
+	@GetMapping(value = "/sizes")
 	public ResponseEntity<Map<String,Object>> showSize(@RequestParam(name = "code") String code){
 		Map<String,Object> result = productService.showSize(code);
 		return ResponseEntity.ok(result);
 	}
 
-	@GetMapping(value = "/show_optional")
+	@PostMapping(value="/size")
+	public ResponseEntity<?> createSize(@RequestParam(name = "sizeName" , required = false) String name ){
+		if(sizeRepository.existsByName(name)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Size đã tông tại");
+		}
+		SizeEntity size = new SizeEntity();
+		size.setName(name);
+		sizeRepository.save(size);
+		return ResponseEntity.status(HttpStatus.CREATED).body("Thêm size thành công");
+	}
+//=================optional
+	@GetMapping(value = "/options")
 	public ResponseEntity<Map<String,Object>> showColorAndSupplierAndBrand(){
 		Map<String,Object> result = productService.showColorAndSupplierAndBrand();
 		return ResponseEntity.ok(result);
 	}
-	
-	@PostMapping(value="/create_color")
+//	===============color
+	@PostMapping(value="/color")
 	public ResponseEntity<?> creatColor(@RequestParam(name = "colorName" , required = false) String name){
 		if(colorRepository.existsByName(name)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Màu đã tồn tại");
@@ -70,8 +80,8 @@ public class ProductAdminApi {
 		colorRepository.save(color);	
 		return ResponseEntity.ok("");
 	}
-	
-	@PostMapping(value="/create_supplier")
+//===================supplier
+	@PostMapping(value="/supplier")
 	public ResponseEntity<?> createSupplier(@Valid @RequestBody SupplierEntity supplier ,
 									BindingResult result){
 		if(result.hasErrors()) {
@@ -83,18 +93,20 @@ public class ProductAdminApi {
 		return ResponseEntity.status(HttpStatus.CREATED).body("Thêm nhà cung cấp thành công");
 	}
 	
-	@PostMapping(value="/create_size")
-	public ResponseEntity<?> createSize(@RequestParam(name = "sizeName" , required = false) String name ){
-		if(sizeRepository.existsByName(name)) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Size đã tông tại");
+//=============brand
+	@PostMapping(value = "/brand")
+	public ResponseEntity<?> createBrand(@RequestParam(name = "brandName", required = false) String brandName){
+		if(brandRepository.existsByName(brandName)){
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Thương hiệu đã tồn tại");
 		}
-		SizeEntity size = new SizeEntity();
-		size.setName(name);
-		sizeRepository.save(size);
-		return ResponseEntity.status(HttpStatus.CREATED).body("Thêm size thành công");
+		BrandEntity result = new BrandEntity();
+		result.setName(brandName);
+		brandRepository.save(result);
+		return ResponseEntity.ok("Tạo thương hiệu thành công");
 	}
+//	================product
 	
-	@PostMapping(value="/add_products")
+	@PostMapping(value="/products/imports")
 	public ResponseEntity<?> addProducts(@Valid @RequestBody List<ImportDetailDTO> importDTO , BindingResult result){
 		try {
 			if(result.hasErrors()) {
@@ -108,7 +120,7 @@ public class ProductAdminApi {
 		}
 	}
 	
-	@GetMapping(value="/history_import")
+	@GetMapping(value="/products/imports/history")
 	public ResponseEntity<?> historyImport(@RequestParam(name="startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 											   @RequestParam(name="endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate ){
 		if(startDate.isAfter(endDate)) {
@@ -121,18 +133,7 @@ public class ProductAdminApi {
 		return ResponseEntity.ok(result);
 	}
 	
-	@PostMapping(value = "/creat_brand")
-	public ResponseEntity<?> createBrand(@RequestParam(name = "brandName", required = false) String brandName){
-		if(brandRepository.existsByName(brandName)){
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Thương hiệu đã tồn tại");
-		}
-		BrandEntity result = new BrandEntity();
-		result.setName(brandName);
-		brandRepository.save(result);
-		return ResponseEntity.ok("Tạo thương hiệu thành công");
-	}
-	
-	@GetMapping(value = "/search")
+	@GetMapping(value = "/products")
 	public ResponseEntity<?> search(@RequestParam Map<String,Object> map){
 		FormResponse form = productService.search(map, null);
 		List<ProductResponse> result = form.getListProduct();
@@ -142,19 +143,20 @@ public class ProductAdminApi {
 		return ResponseEntity.ok(result);
 	}
 	
-	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<?> deleteProduct(@PathVariable Long id){
-		productRepository.deleteById(id);
+	
+	@DeleteMapping(value = "/product/{ids}")
+	public ResponseEntity<?> deleteProduct(@PathVariable List<Long> ids){
+		productRepository.deleteAllById(ids);
 		return ResponseEntity.ok("Xóa sản phẩm thành công");
 	}
 	
-	@GetMapping(value = "/detail_product/{id}")
+	@GetMapping(value = "/product/{id}")
 	public ResponseEntity<?> detailProduct(@PathVariable Long id){
 		ProductResponse result = productService.detailProduct(id);
 		return ResponseEntity.ok(result);	
 	}
 	
-	@PostMapping(value = "/edit_product")
+	@PostMapping(value = "/product")
 	public ResponseEntity<?> editProduct(@Valid @RequestBody ProductResponse product , BindingResult result){
 		try {
 			if(result.hasErrors()) {
@@ -167,4 +169,5 @@ public class ProductAdminApi {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+	
 }

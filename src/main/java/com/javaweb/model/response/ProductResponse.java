@@ -3,7 +3,6 @@ package com.javaweb.model.response;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -26,6 +25,7 @@ public class ProductResponse {
 	private Integer discount;
 	private Integer brandId;
 	private String brandName;
+	private String image;
 	@Valid
 	private List<ProductVariantResponse> variants;
 }

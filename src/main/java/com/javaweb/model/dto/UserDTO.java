@@ -1,5 +1,7 @@
 package com.javaweb.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.NotBlank;
 
 import lombok.Getter;
@@ -12,6 +14,7 @@ import lombok.Setter;
 //@NoArgsConstructor
 public class UserDTO {
 	
+	
 	@NotBlank(message = "UserName can not be blank")
 	private String name ;
 	
@@ -21,7 +24,7 @@ public class UserDTO {
 	@NotBlank(message = "Password can not be blank")
 	private String password;
 	
-	@NotBlank(message = "Address can not be blank")
+//	@NotBlank(message = "Address can not be blank")
 	private String address;
 	
 	@NotBlank(message = "Retype Password can not be blank")

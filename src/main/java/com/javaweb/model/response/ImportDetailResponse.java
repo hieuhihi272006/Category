@@ -13,10 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImportDetailResponse {
-	private String name ;
 	private Integer quantity;
 	private BigDecimal price;
 	private String colorName;
 	private String sizeName;
-	private String supplierName;
 }

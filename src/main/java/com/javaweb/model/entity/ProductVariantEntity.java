@@ -3,7 +3,6 @@ package com.javaweb.model.entity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,8 +54,13 @@ public class ProductVariantEntity {
 	private ColorEntity color;
 	
 	@Builder.Default
-	@OneToMany(mappedBy="variant" , fetch =FetchType.LAZY ,cascade =  {CascadeType.PERSIST , CascadeType.MERGE , CascadeType.REMOVE} , orphanRemoval = true )
+	@OneToMany(mappedBy="variant")
 	private List<ImportDetailEntity> importDetails = new ArrayList<>();
 	
+	@Builder.Default
+	@OneToMany(mappedBy="variant" , fetch =FetchType.LAZY ,cascade =  {CascadeType.PERSIST , CascadeType.MERGE , CascadeType.REMOVE} , orphanRemoval = true )
+	private List<CartItemEntity> cartItems = new ArrayList<>();
+	
+
 
 }

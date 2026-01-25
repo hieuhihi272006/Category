@@ -28,6 +28,7 @@ public class SecurityConfig {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
 		return config.getAuthenticationManager();
 	}
+	
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return phoneNumber -> userRepository
@@ -35,6 +36,7 @@ public class SecurityConfig {
 				 .orElseThrow(() ->
 						 	new UsernameNotFoundException("Cannot find user with phoneNumber = " + phoneNumber));
 	}
+	
 	@Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();

@@ -1,11 +1,11 @@
 package com.javaweb.service.impl;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.javaweb.model.dto.UserDTO;
@@ -15,6 +15,7 @@ import com.javaweb.model.entity.UserEntity;
 import com.javaweb.repository.UserRepository;
 import com.javaweb.service.UserService;
 import com.javaweb.utils.JwtTokenUtil;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -58,16 +59,17 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public String loginUser(UserLoginDTO userLogin) throws Exception{
 		// TODO Auto-generated method stub
-		Optional<UserEntity> optionalUser = userRepository.findByPhoneNumber(userLogin.getPhoneNumber());
-		if(!optionalUser.isPresent()) {
-			throw new Exception("Invalid phone number/password");
-		}
-		UserEntity user = optionalUser.get();
-		if(!passwordEncoder.matches(userLogin.getPassword() , user.getPassword())) {
-			throw new Exception("Wrong phone number or password");
-		}
-		UsernamePasswordAuthenticationToken authen = new UsernamePasswordAuthenticationToken(userLogin.getPhoneNumber() , userLogin.getPassword());
-		Authentication authentication = authenticationManager.authenticate(authen);
+//		Optional<UserEntity> optionalUser = userRepository.findByPhoneNumber(userLogin.getPhoneNumber());
+//		if(!optionalUser.isPresent()) {
+//			throw new Exception("Invalid phone number/password");
+//		}
+//		UserEntity user = optionalUser.get();
+//		if(!passwordEncoder.matches(userLogin.getPassword() , user.getPassword())) {
+//			throw new Exception("Wrong phone number or password");
+//		}
+//		UsernamePasswordAuthenticationToken authen = UsernamePasswordAuthenticationToken.unauthenticated(userLogin.getPhoneNumber() , userLogin.getPassword());
+//		Authentication authentication = authenticationManager.authenticate(authen);
+		UserDetails user = (UserDetails) authenticationManager.authenticate(UsernamePasswordAuthenticationToken.unauthenticated(userLogin.getPhoneNumber(), userLogin.getPassword())).getPrincipal();
 		return jwtTokenUtil.generateToken(user);
 	}
 

@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,19 +34,23 @@ public class UserApi {
 				return ResponseEntity.badRequest().body("Password not match");
 			}
 			userService.register(userDTO);
-			return ResponseEntity.ok("Create account access");
+			return ResponseEntity.status(HttpStatus.CREATED).body("Accound created successfully");
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 	
 	@PostMapping(value = "/login")
-	public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDTO userLogin){
+	public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDTO userLogin , BindingResult result ){
 		try {
+			if(result.hasErrors()) {
+				List<String> errors = result.getFieldErrors().stream().map(FieldError :: getDefaultMessage).toList();
+				return ResponseEntity.badRequest().body(errors);
+			}
 			String token = userService.loginUser(userLogin);
 			return ResponseEntity.ok(token);
 		}catch(Exception e) {
-			return ResponseEntity.badRequest().body(e.getMessage());	
+			return ResponseEntity.badRequest().body("Phone number or password is incorrect.");
 		}
 	}
 }

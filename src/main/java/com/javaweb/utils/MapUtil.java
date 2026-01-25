@@ -1,5 +1,4 @@
 package com.javaweb.utils;
-
 import java.util.Map;
 
 public class MapUtil {

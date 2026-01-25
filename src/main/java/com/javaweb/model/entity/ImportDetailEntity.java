@@ -4,6 +4,7 @@ package com.javaweb.model.entity;
 
 import java.math.BigDecimal;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,11 +43,8 @@ public class ImportDetailEntity {
 	@JoinColumn(name = "import_id")
 	private ImportReceiptEntity importReceipt ;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="supplier_id")
-	private SupplierEntity supplier;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_variant_id")
+	@ManyToOne(fetch = FetchType.LAZY , cascade =  {CascadeType.PERSIST } )
+	@JoinColumn(name = "variant_id")
 	private ProductVariantEntity variant;
 }

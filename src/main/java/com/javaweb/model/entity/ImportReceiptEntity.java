@@ -4,6 +4,8 @@ package com.javaweb.model.entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.CascadeType;
@@ -14,6 +16,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -30,12 +34,23 @@ public class ImportReceiptEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
+	@Column(name = "code")
+	private String code;
+	
 	@Column(name = "note")
 	private String note;
 	
 	@CreatedDate
 	@Column(name = "created_at")
 	private LocalDate createdAt;
+	
+	@CreatedBy
+	@Column(name="create_by")
+	private String createBy;
+	
+	@ManyToOne(fetch = FetchType.LAZY )
+	@JoinColumn(name="supplier_id")
+	private SupplierEntity supplier;
 	
 	@OneToMany(mappedBy = "importReceipt" , fetch = FetchType.LAZY , cascade =  {CascadeType.PERSIST , CascadeType.MERGE } , orphanRemoval = true )
 	private List<ImportDetailEntity> importDetails = new ArrayList<>();

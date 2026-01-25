@@ -1,12 +1,8 @@
 package com.javaweb.model.entity;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.data.annotation.CreatedDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,19 +30,15 @@ public class ProductEntity {
 	private Double rating;
 	@Column(name = "price")
 	private BigDecimal price;
-	@Column(name = "quantity")
-	private Integer quantity;
-	
-//	@CreatedDate
-//	@Column(name = "created_at")
-//	private Date created_at;
-	
 	@Column(name="discount")
 	private Integer discount;
 	@Column(name="product_code")
 	private String productCode;
 	@Column(name="image_url")
-	private String imageUrl;
+	private String image;
+	
+	@Column(name="is_delete")
+	private boolean isDelete;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")

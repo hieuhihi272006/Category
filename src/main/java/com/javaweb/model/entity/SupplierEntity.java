@@ -40,14 +40,12 @@ public class SupplierEntity {
 	private String email;
 	
 	@Column(name="address")
-	@NotBlank(message = "address is required")
 	private String address;
 	
 	@Column(name = "created_at")
     @CreatedDate
     private LocalDateTime creatddate ;
-	
-	
+		
 	@OneToMany(mappedBy="supplier", fetch = FetchType.LAZY)
-	private List<ImportDetailEntity> importDetails = new ArrayList<>();
+	private List<ImportReceiptEntity> importReceipt = new ArrayList<>();
 }

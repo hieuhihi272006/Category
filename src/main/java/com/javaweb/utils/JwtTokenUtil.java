@@ -1,14 +1,8 @@
 package com.javaweb.utils;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
-import com.javaweb.model.entity.RoleEntity;
-import com.javaweb.model.entity.UserEntity;
-
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,15 +10,19 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
-import lombok.RequiredArgsConstructor;
+//import io.jsonwebtoken.io.Base64Decoder;
+import io.jsonwebtoken.security.Keys;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenUtil {
 	
 	@Value("${jwt.expiration}")
@@ -37,29 +35,53 @@ public class JwtTokenUtil {
 		return Keys.hmacShaKeyFor(bytes);
 	}
 	
-	public String generateToken(UserEntity user) throws Exception{
+	public String generateToken(UserDetails user) throws Exception{
+//		Map<String,Object> claims = new HashMap<>();
+//		claims.put("phoneNumber", user.getPhoneNumber());
+//		List<String> roles = new ArrayList<>();
+//		for(RoleEntity it : user.getRoles()) {
+//			if(it.getCode() != null) {
+//				roles.add(it.getCode());
+//			}
+//		}
+//		claims.put("roles" , roles);
+//		claims.put("id",user.getId());
+//		try {
+//			String token = Jwts.builder()
+//								.setClaims(claims)
+//								.setSubject(user.getPhoneNumber())
+//								.setExpiration(new Date(System.currentTimeMillis() + expiration*1000L))
+//								.signWith(getSingInKey() , SignatureAlgorithm.HS256)
+//								.compact();
+//			return token;
+//		}catch(Exception e) {
+//			throw new Exception("Cannot create jwt token , error " + e.getMessage());
+//		}
+		
 		Map<String,Object> claims = new HashMap<>();
-		claims.put("phoneNumber", user.getPhoneNumber());
+		claims.put("phoneNumber", user.getUsername());
 		List<String> roles = new ArrayList<>();
-		for(RoleEntity it : user.getRoles()) {
-			if(it.getCode() != null) {
-				roles.add(it.getCode());
-			}
+		Collection<? extends GrantedAuthority> listRole = user.getAuthorities();
+		for(GrantedAuthority it : listRole) {
+			roles.add(it.getAuthority());
 		}
 		claims.put("roles" , roles);
 		try {
-			String token = Jwts.builder()
-								.setClaims(claims)
-								.setSubject(user.getPhoneNumber())
-								.setExpiration(new Date(System.currentTimeMillis() + expiration*1000L))
-								.signWith(getSingInKey() , SignatureAlgorithm.HS256)
-								.compact();
+		String token = Jwts.builder()
+							.setClaims(claims)
+//							.compressWith(CompressionCodecs.DEFLATE)
+							.setSubject(user.getUsername())
+							.setExpiration(new Date(System.currentTimeMillis() + expiration*1000L))
+							.signWith(getSingInKey() , SignatureAlgorithm.HS256)
+							.compact();
 			return token;
 		}catch(Exception e) {
 			throw new Exception("Cannot create jwt token , error " + e.getMessage());
-		}
+			}
+		
 	}
 	
+
 	private Claims extractAllClaims(String token) {
 		return Jwts.parserBuilder()
 					.setSigningKey(getSingInKey())
@@ -80,9 +102,9 @@ public class JwtTokenUtil {
 	public boolean isTokenExpired(String token) {
 		Date expirationDate = extractClaim(token, Claims :: getExpiration);
 		return expirationDate.before(new Date());
-		
 	}
-	public boolean valtdateToken(String token , UserDetails userDetail) {
+	
+	public boolean validdateToken(String token , UserDetails userDetail) {
 		String phoneNumber = extractPhoneNumber(token);
 		return (phoneNumber.equals(userDetail.getUsername()) && !isTokenExpired(token));	
 	}

@@ -5,13 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.javaweb.converter.ProductConverter;
 import com.javaweb.customException.ResourceNotFoundException;
+import com.javaweb.customException.TestException;
 import com.javaweb.customException.UserNotFoundException;
 import com.javaweb.model.builder.ProductBuilder;
 import com.javaweb.model.dto.OrderProductDTO;
@@ -103,17 +102,14 @@ public class ProductServiceImpl implements ProductService{
 		        	newCartEntity.setUser(user);
 		        	return newCartEntity;
 		        	});
+		
 		cartRepository.save(cartEntity);
-		
 		ProductVariantEntity productVariantEntity = productVariantRepository.findById(Long.valueOf(orderProduct.getVariantId())).orElseThrow(() -> new ResourceNotFoundException("Not found variant"));
-		
 		Optional<CartItemEntity> cartItem = cartItemRepository.findByCart_IdAndVariant_Id(cartEntity.getId(), orderProduct.getVariantId());
 		
 		if(cartItem.isPresent()) {
 			CartItemEntity item = cartItem.get();
-			item.setCart(cartEntity);
-			item.setPrice(orderProduct.getPrice());
-			item.setQuantity(orderProduct.getQuantity());
+			item.setQuantity(orderProduct.getQuantity() + item.getQuantity());
 			cartItemRepository.save(item);
 		}
 		else {
@@ -126,36 +122,12 @@ public class ProductServiceImpl implements ProductService{
 		}
 	}
 
-//	@Transactional
-//	@Override
-//	public void buyProduct(OrderBuyDTO orderBuyDTO , Integer userId) {
-//		// TODO Auto-generated method stub
-//		List<CartItemEntity> cartItems = cartItemRepository.findAllById(orderBuyDTO.getIdCartItems());
-//		OrderBuyEntity orderBuyEntity = new OrderBuyEntity();
-//		UserEntity user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new UserNotFoundException("Not found user"));
-//		List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
-//		BigDecimal total = BigDecimal.ZERO;
-//		for(CartItemEntity it : cartItems) {
-//			OrderDetailEntity orderItem = new OrderDetailEntity();
-//			orderItem.setOrder(orderBuyEntity);
-//			orderItem.setPrice(it.getPrice());
-//			orderItem.setQuantity(it.getQuantity());
-//			orderItem.setVariant(it.getVariant());
-//			orderDetailEntities.add(orderItem);
-//			total = total.add(it.getPrice().multiply(BigDecimal.valueOf(it.getQuantity())));
-//		}
-//		orderBuyEntity.setOrderDetail(orderDetailEntities);
-//		orderBuyEntity.setUser(user);
-//		orderBuyEntity.setNote(orderBuyDTO.getNote());
-//		orderBuyEntity.setPaymentMethod(orderBuyDTO.getPaymentMethod());
-//		orderBuyEntity.setPrice(total);
-//		orderBuyEntity.setStatus("Đang xử lý");
-//		orderBuyRepository.save(orderBuyEntity);
-//		cartItemRepository.deleteAllById(orderBuyDTO.getIdCartItems());
-//	}
+	@Override
+	public String test(Long id) {
+		// TODO Auto-generated method stub		
+		return null;
+	}
 
 
-	
-	
 
 }

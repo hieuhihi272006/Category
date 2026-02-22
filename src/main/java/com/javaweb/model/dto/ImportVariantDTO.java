@@ -1,7 +1,5 @@
 package com.javaweb.model.dto;
 
-import java.math.BigDecimal;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +16,6 @@ public class ImportVariantDTO {
 	private Integer quantity;
 	
 	@NotNull(message="Price product is required")
-	private BigDecimal price;
+	private Long price;
 	
 }

@@ -8,12 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.javaweb.converter.ProductConverter;
 import com.javaweb.model.builder.ProductBuilder;
 import com.javaweb.model.dto.ImportDetailDTO;
@@ -42,7 +39,6 @@ import com.javaweb.repository.SupplierRepository;
 import com.javaweb.repository.specification.ProductSpecs;
 import com.javaweb.service.AdminService;
 import com.javaweb.utils.MapUtil;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -72,7 +68,7 @@ public class AdminServiceImpl implements AdminService{
 	
 	
 	@Override
-	public Map<String, Object> showOptional() {
+	public Map<String, Object> getOptional() {
 		// TODO Auto-generated method stub
 		Map<String,Object> result = new HashMap<>();
 		Map<Integer , String> color = new HashMap<>();
@@ -114,7 +110,7 @@ public class AdminServiceImpl implements AdminService{
 			ProductEntity newProduct = new ProductEntity();
 			newProduct.setProductCode(importDTO.getProductCode());
 			newProduct.setName(importDTO.getName());
-			newProduct.setPrice(BigDecimal.ZERO);
+			newProduct.setPrice(0L);
 			productRepository.save(newProduct);
 			if(importDTO.getImportVariant() != null) {
 				for(ImportVariantDTO it : importDTO.getImportVariant()) {
@@ -123,7 +119,7 @@ public class AdminServiceImpl implements AdminService{
 														.color(colorRepository.findById(it.getColorId()))
 														.size(sizeRepository.findById(it.getSizeId()))
 														.quantity(it.getQuantity() != null ? it.getQuantity() : 0)
-														.price(it.getPrice() != null ? it.getPrice() : BigDecimal.ZERO)
+														.price(it.getPrice() != null ? it.getPrice() : 0)
 														.product(newProduct)
 														.build();
 					ImportDetailEntity importDetail =  ImportDetailEntity.builder()
@@ -148,7 +144,7 @@ public class AdminServiceImpl implements AdminService{
 										.color(colorRepository.findById(it.getColorId()))
 										.size(sizeRepository.findById(it.getSizeId()))
 										.quantity(0)
-										.price(it.getPrice() != null ? it.getPrice() : BigDecimal.ZERO)
+										.price(it.getPrice() != null ? it.getPrice() : 0)
 										.product(product.get())
 										.build();
 								return newVariant;
@@ -158,7 +154,6 @@ public class AdminServiceImpl implements AdminService{
 					ImportDetailEntity importDetail =  ImportDetailEntity.builder()
 							.importReceipt(importReceiptEntity)
 							.variant(variantUpdate)
-//							.supplier(supplierRepository.findById(importDTO.getSupplierId()))
 							.quantity(it.getQuantity())
 							.price(it.getPrice())
 							.build();
@@ -174,64 +169,6 @@ public class AdminServiceImpl implements AdminService{
 		}
 		importReceiptRepository.save(importReceiptEntity);
 		
-//		ImportReceiptEntity importReceipt = new ImportReceiptEntity();
-//		importReceiptRepository.save(importReceipt);
-//		for(ImportDetailDTO it : importDTOs) {
-//			SupplierEntity supplier = supplierRepository.findById(it.getSupplierId());
-//			Optional<ProductEntity> product = productRepository.findByProductCode(it.getProductCode());
-//			if(product.isPresent()) {
-//				List<ProductVariantEntity> variants = product.get().getProductVariants();
-//				boolean check = false;
-//				ProductVariantEntity variant = new ProductVariantEntity();
-//				for(ProductVariantEntity sc : variants) {
-//					Object obj1 = sc.getSize() != null ? sc.getSize().getId() : null;
-//					Object obj2 = sc.getColor() != null ? sc.getColor().getId() : null;
-//					if (Objects.equals(obj1, it.getSizeId()) && Objects.equals(obj2, it.getColorId())) {
-//					    sc.setQuantity(sc.getQuantity() + it.getQuantity());
-//					    check = true;
-//					    variant = sc;
-//					}
-//
-//				}
-//				if(!check) {
-//					ProductVariantEntity newVariant = new ProductVariantEntity();
-//					newVariant.setPrice(it.getPrice());
-//					newVariant.setQuantity(it.getQuantity());
-//					ColorEntity color = colorRepository.findById(it.getColorId());
-//					newVariant.setColor(color);
-//					SizeEntity size = sizeRepository.findById(it.getSizeId());
-//					newVariant.setSize(size);
-//					newVariant.setProduct(product.get());
-//					productVariantRepository.save(newVariant);
-//					variants.add(newVariant);
-//					variant = newVariant;
-//				}
-//				importDetailRepository.save(productConverter.toImportDetail(it,variant,supplier,importReceipt));
-//				product.get().setProductVariants(variants);
-////				product.get().setQuantity(it.getQuantity() + product.get().getQuantity());
-//				productRepository.save(product.get());
-//			}
-//			else {
-//				ProductEntity newProduct = ProductEntity.builder()
-//														.name(it.getName())
-//														.price(it.getPrice())
-//														.productCode(it.getProductCode())
-////														.quantity(it.getQuantity())
-//														.discount(0)
-//														.build();
-//				productRepository.save(newProduct);
-//				ProductVariantEntity variant = ProductVariantEntity.builder()
-//																   .color(colorRepository.findById(it.getColorId()))
-//																   .size(sizeRepository.findById(it.getSizeId()))
-//																   .price(it.getPrice())
-//																   .quantity(it.getQuantity())
-//																   .product(newProduct)
-//																   .build();
-//				productVariantRepository.save(variant);
-//				importDetailRepository.save(productConverter.toImportDetail(it,variant,supplier,importReceipt));
-//			}
-//		}
-		
 	}
 	
 	@Override
@@ -240,14 +177,12 @@ public class AdminServiceImpl implements AdminService{
 		List<ImportReceiptEntity> importReceipts = importReceiptRepository.findByCreatedAtBetween(startDate, endDate);
 		List<ImportReceiptResponse> importReceiptRespone = new ArrayList<>();
 		
-		
 		for(ImportReceiptEntity it : importReceipts) {
-			
 			List<ImportDetailResponse> importDetailResponse = productConverter.toImportDetailResponse(it);
-			BigDecimal totalPrice = BigDecimal.ZERO;
+			Long totalPrice = 0L;
 			Integer quantity = 0;
 			for(ImportDetailResponse sc : importDetailResponse) {
-				totalPrice = totalPrice.add((sc.getPrice().multiply(BigDecimal.valueOf(sc.getQuantity()))));
+				totalPrice += sc.getPrice()*sc.getQuantity();
 				quantity += sc.getQuantity();
 			}
 			
@@ -294,13 +229,13 @@ public class AdminServiceImpl implements AdminService{
 		productRepository.save(newProduct);
 	}
 	
-	
+//	Sua lai
 	@Override
 	public List<OrderBuyResponse> historyOrder(LocalDate startDate, LocalDate endDate) {
 		// TODO Auto-generated method stub
 		List<OrderBuyEntity> orderBuyEntities = orderBuyRepository.findByCreatedAtBetween(startDate, endDate);
 		List<OrderBuyResponse> buyResponses = new ArrayList<>();
-		for(OrderBuyEntity it : orderBuyEntities) {
+		for(OrderBuyEntity it : orderBuyEntities){
 			OrderBuyResponse item = modelMapper.map(it, OrderBuyResponse.class);
 			item.setCode("MD"+String.valueOf(it.getId()));
 			item.setNameUser(it.getUser().getName());

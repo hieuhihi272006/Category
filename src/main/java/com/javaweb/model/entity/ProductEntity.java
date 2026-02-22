@@ -29,7 +29,7 @@ public class ProductEntity {
 	@Column(name = "rating")
 	private Double rating;
 	@Column(name = "price")
-	private BigDecimal price;
+	private Long price;
 	@Column(name="discount")
 	private Integer discount;
 	@Column(name="product_code")

@@ -1,6 +1,5 @@
 package com.javaweb.converter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +17,6 @@ import com.javaweb.model.entity.ProductVariantEntity;
 import com.javaweb.model.response.ImportDetailResponse;
 import com.javaweb.model.response.ProductResponse;
 import com.javaweb.model.response.ProductVariantResponse;
-import com.javaweb.repository.ColorRepository;
-import com.javaweb.repository.ImportReceiptRepository;
-import com.javaweb.repository.SizeRepository;
-import com.javaweb.repository.SupplierRepository;
 import com.javaweb.utils.MapUtil;
 
 @Component
@@ -29,21 +24,14 @@ public class ProductConverter {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	@Autowired
-	private ColorRepository colorRepository;
-	@Autowired
-	private SupplierRepository supplierRepository;
-	@Autowired
-	private ImportReceiptRepository importReceiptRepository;
-	@Autowired
-	private SizeRepository sizeRepository;
 	
 	public static void toPrice(ProductResponse product , ProductEntity it) {
 		if(it.getDiscount() != null) {
 			if(it.getDiscount() != 0) {
-				BigDecimal discount = BigDecimal.valueOf(it.getDiscount()).divide(BigDecimal.valueOf(100));
-				BigDecimal cnt = it.getPrice().multiply(discount);
-				product.setDiscount_price(it.getPrice().subtract(cnt));
+			
+				
+				Long discounttPrice = it.getPrice() - it.getPrice()*it.getDiscount()/100;
+				product.setDiscount_price(discounttPrice);
 			}
 			else {
 				product.setDiscount_price(it.getPrice());

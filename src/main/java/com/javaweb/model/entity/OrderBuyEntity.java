@@ -52,7 +52,7 @@ public class OrderBuyEntity {
 	private String note;
 	
 	@Column(name="price")
-	private BigDecimal price;
+	private Long price;
 	
 	@CreatedDate
 	@Column(name = "created_at")

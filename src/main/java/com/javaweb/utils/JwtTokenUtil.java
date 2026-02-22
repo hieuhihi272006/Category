@@ -1,5 +1,4 @@
 package com.javaweb.utils;
-
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,17 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
-//import io.jsonwebtoken.io.Base64Decoder;
 import io.jsonwebtoken.security.Keys;
 
 @Component
@@ -36,28 +32,7 @@ public class JwtTokenUtil {
 	}
 	
 	public String generateToken(UserDetails user) throws Exception{
-//		Map<String,Object> claims = new HashMap<>();
-//		claims.put("phoneNumber", user.getPhoneNumber());
-//		List<String> roles = new ArrayList<>();
-//		for(RoleEntity it : user.getRoles()) {
-//			if(it.getCode() != null) {
-//				roles.add(it.getCode());
-//			}
-//		}
-//		claims.put("roles" , roles);
-//		claims.put("id",user.getId());
-//		try {
-//			String token = Jwts.builder()
-//								.setClaims(claims)
-//								.setSubject(user.getPhoneNumber())
-//								.setExpiration(new Date(System.currentTimeMillis() + expiration*1000L))
-//								.signWith(getSingInKey() , SignatureAlgorithm.HS256)
-//								.compact();
-//			return token;
-//		}catch(Exception e) {
-//			throw new Exception("Cannot create jwt token , error " + e.getMessage());
-//		}
-		
+
 		Map<String,Object> claims = new HashMap<>();
 		claims.put("phoneNumber", user.getUsername());
 		List<String> roles = new ArrayList<>();
@@ -69,7 +44,6 @@ public class JwtTokenUtil {
 		try {
 		String token = Jwts.builder()
 							.setClaims(claims)
-//							.compressWith(CompressionCodecs.DEFLATE)
 							.setSubject(user.getUsername())
 							.setExpiration(new Date(System.currentTimeMillis() + expiration*1000L))
 							.signWith(getSingInKey() , SignatureAlgorithm.HS256)

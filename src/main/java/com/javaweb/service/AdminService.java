@@ -10,7 +10,7 @@ import com.javaweb.model.response.OrderBuyResponse;
 import com.javaweb.model.response.ProductResponse;
 
 public interface AdminService {
-	Map<String,Object> showOptional();
+	Map<String,Object> getOptional();
 	void addProducts(ImportDetailDTO importDTO);
 	List<ImportReceiptResponse> historyImport(LocalDate startDate , LocalDate endDate);
 	void editProduct(ProductResponse product);

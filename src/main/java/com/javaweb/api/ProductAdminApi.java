@@ -71,7 +71,7 @@ public class ProductAdminApi {
 //=================optional
 	@GetMapping(value = "/options")
 	public ResponseEntity<Map<String,Object>> showOptional(){
-		Map<String,Object> result = adminService.showOptional();
+		Map<String,Object> result = adminService.getOptional();
 		return ResponseEntity.ok(result);
 	}
 //	===============color

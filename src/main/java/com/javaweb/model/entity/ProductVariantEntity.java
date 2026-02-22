@@ -36,7 +36,7 @@ public class ProductVariantEntity {
 	private Integer quantity;
 	
 	@Column(name="price")
-	private BigDecimal price;
+	private Long price;
 	
 	@Column(name="image_url")
 	private String image;

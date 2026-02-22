@@ -11,4 +11,6 @@ public interface ProductService {
 	FormResponse search(Map<String,Object> map , List<Integer> brands);
 	void orderProduct(OrderProductDTO orderProduct , Integer id);
 	ProductResponse detailProduct(Long id);
+	
+	String test(Long id);
 }

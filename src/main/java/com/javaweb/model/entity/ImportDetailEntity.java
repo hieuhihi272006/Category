@@ -37,7 +37,7 @@ public class ImportDetailEntity {
 	private Integer quantity;
 	
 	@Column(name="price")
-	private BigDecimal price;
+	private Long price;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "import_id")

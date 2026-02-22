@@ -19,8 +19,8 @@ public class ProductResponse {
 	private String name ;
 	private String description ;
 	@NotNull(message="Price is required")
-	private BigDecimal price;
-	private BigDecimal discount_price;
+	private Long price;
+	private Long discount_price;
 	@NotNull(message="Quantity is required")
 	private Integer quantity;
 	private Date created_at;

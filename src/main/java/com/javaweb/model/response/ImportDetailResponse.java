@@ -1,6 +1,5 @@
 package com.javaweb.model.response;
 
-import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ImportDetailResponse {
 	private Integer quantity;
-	private BigDecimal price;
+	private Long price;
 	private String colorName;
 	private String sizeName;
 }

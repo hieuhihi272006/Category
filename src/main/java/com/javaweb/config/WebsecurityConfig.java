@@ -51,16 +51,19 @@ public class WebsecurityConfig{
 									String.format("%s/product/**", prefix)).permitAll()
 							.requestMatchers(GET,
 									String.format("%s/banners", prefix)).permitAll()
+							
+							.requestMatchers(POST,"/api/pay/momo/ipn").permitAll()
 						
 							
 							.requestMatchers(POST,
 									String.format("%s/cart", prefix)).hasAnyRole("USER")
-							.requestMatchers(POST,
-									String.format("%s/order", prefix)).hasAnyRole("USER")
+							.requestMatchers(POST, "/api/pay/momo/order").hasAnyRole("USER")
 							
 							
 							.requestMatchers(GET ,
-									String.format("%s/hello", prefix)).hasAnyRole("ADMIN")
+									String.format("%s/test", prefix)).hasAnyRole("USER")
+							
+							
 							.requestMatchers(GET ,
 									String.format("%s/sizes", adminPrefix)).hasAnyRole("ADMIN")
 							.requestMatchers(POST,

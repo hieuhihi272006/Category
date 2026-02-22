@@ -32,7 +32,7 @@ public class CartItemEntity {
 	@Column(name="quantity")
 	private Integer quantity;
 	@Column(name="price")
-	private BigDecimal price;
+	private Long price;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="cart_id")

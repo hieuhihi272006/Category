@@ -33,7 +33,7 @@ public class OrderDetailEntity {
 	private Integer quantity;
 	
 	@Column(name="price")
-	private BigDecimal price;
+	private Long price;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")

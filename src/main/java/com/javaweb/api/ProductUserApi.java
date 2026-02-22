@@ -23,11 +23,6 @@ import com.javaweb.model.response.ProductResponse;
 import com.javaweb.repository.BannerRepository;
 import com.javaweb.service.ProductService;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotNull;
-
-//import jakarta.annotation.security.RolesAllowed;
-
 
 @RestController
 @RequestMapping("/api/grocery")
@@ -68,23 +63,19 @@ public class ProductUserApi {
 		return ResponseEntity.ok("Them san pham vao gio hang thanh cong");
 	}
 	
-//	@PostMapping(value = "/order")
-//	public ResponseEntity<?> buyProduct(@Valid @RequestBody OrderBuyDTO orderBuyDTO ,
-//										BindingResult result,
-//			       						@AuthenticationPrincipal UserEntity user){
-//		if(result.hasErrors()) {
-//			List<String> errors = result.getFieldErrors().stream().map(FieldError :: getDefaultMessage).toList();
-//			return ResponseEntity.badRequest().body(errors);
-//		}
-//
-//		productService.buyProduct(orderBuyDTO, user.getId());
-//		return ResponseEntity.status(HttpStatus.CREATED).body("Tao don hang thanh cong");
-//	}
 
-	@GetMapping(value = "/hello")
+//	@GetMapping(value = "/hello")
 //	@RolesAllowed("ADMIN")
-	public ResponseEntity<?> hello(@RequestParam(name = "test") String test , @NotNull HttpServletRequest request){
-		System.out.print(test);
-		return ResponseEntity.ok("hello");
+//	public ResponseEntity<?> hello(@RequestParam(name = "test") String test , @NotNull HttpServletRequest request){
+//		System.out.print(test);
+//		return ResponseEntity.ok("hello");
+//	}
+	
+	@GetMapping(value = "/test/{id}")
+	public ResponseEntity<?> test(@PathVariable Long id){
+		String result = productService.test(id);
+		return ResponseEntity.ok(result);
 	}
+	
+	
 }

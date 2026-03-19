@@ -14,12 +14,14 @@ public class ProductSpecs {
 			if(product.getName() != null) {
 				predicates.add(cb.like(cb.lower(root.get("name")), "%" + product.getName().toLowerCase() + "%"));
 			}
+			
 			if(product.getPriceFrom() != null) {
-				predicates.add(cb.greaterThanOrEqualTo(root.get("price"), product.getPriceFrom()));
+				predicates.add(cb.greaterThanOrEqualTo(root.get("maxPrice"), product.getPriceFrom()));
 			}
 			if(product.getPriceTo() != null) {
-				predicates.add(cb.lessThanOrEqualTo(root.get("price"), product.getPriceTo()));
+				predicates.add(cb.lessThanOrEqualTo(root.get("minPrice"), product.getPriceTo()));
 			}
+			
 			if(product.getRating() !=null) {
 				predicates.add(cb.equal(root.get("rating"), product.getRating()));
 			}

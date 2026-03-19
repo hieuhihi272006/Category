@@ -25,19 +25,19 @@ public class ProductConverter {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public static void toPrice(ProductResponse product , ProductEntity it) {
-		if(it.getDiscount() != null) {
-			if(it.getDiscount() != 0) {
-			
-				
-				Long discounttPrice = it.getPrice() - it.getPrice()*it.getDiscount()/100;
-				product.setDiscount_price(discounttPrice);
-			}
-			else {
-				product.setDiscount_price(it.getPrice());
-			}
-		}
-	}
+//	public static void toPrice(ProductResponse product , ProductEntity it) {
+//		if(it.getDiscount() != null) {
+//			if(it.getDiscount() != 0) {
+//			
+//				
+//				Long discounttPrice = it.getPrice() - it.getPrice()*it.getDiscount()/100;
+//				product.setDiscount_price(discounttPrice);
+//			}
+//			else {
+//				product.setDiscount_price(it.getPrice());
+//			}
+//		}
+//	}
 	
 	public ProductBuilder toProductBuilder(Map<String,Object> params , List<Integer> brands) {
 		ProductBuilder result = ProductBuilder.builder()
@@ -51,16 +51,12 @@ public class ProductConverter {
 		return result;
 	}
 
+//	public void calculateProductResponse(ProductEntity productEntity , Pro)
+	
 	public List<ProductResponse> toProductResponse(List<ProductEntity> listProductEntity){
 		List<ProductResponse> listProductResponse = new ArrayList<>();
 		for(ProductEntity it : listProductEntity) {
 			ProductResponse product = modelMapper.map(it, ProductResponse.class);
-			int quantity = 0;
-			for (ProductVariantEntity sc : it.getProductVariants()) {
-			    quantity += sc.getQuantity();
-			}
-			product.setQuantity(quantity);
-			toPrice(product,it);
 			listProductResponse.add(product);
 		}
 		return listProductResponse;
@@ -68,13 +64,12 @@ public class ProductConverter {
 	
 	public ProductResponse toProductResponseDetail(ProductEntity productEntity) {
 		ProductResponse result = modelMapper.map(productEntity, ProductResponse.class);
-		toPrice(result,productEntity);
+		
+//		toPrice(result,productEntity);
 		List<ProductVariantResponse> productVariantResponses = new ArrayList<>();
 		if(productEntity.getProductVariants() != null) {
-			int quantity = 0;
 			for(ProductVariantEntity it : productEntity.getProductVariants()) {
 				ProductVariantResponse variant = modelMapper.map(it, ProductVariantResponse.class);
-				quantity += it.getQuantity();
 				Map<String , Object> size = new HashMap<>();
 				size.put("id", it.getSize() != null ? it.getSize().getId() : null);
 				size.put("name", it.getSize() != null ? it.getSize().getName() : null);
@@ -86,7 +81,6 @@ public class ProductConverter {
 				variant.setColors(color);
 				productVariantResponses.add(variant);
 			}
-			result.setQuantity(quantity);
 		}
 		result.setVariants(productVariantResponses);
 		return result;

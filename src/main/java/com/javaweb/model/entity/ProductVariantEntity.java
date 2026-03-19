@@ -1,6 +1,6 @@
 package com.javaweb.model.entity;
 
-import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.CascadeType;
@@ -37,6 +37,9 @@ public class ProductVariantEntity {
 	
 	@Column(name="price")
 	private Long price;
+	
+	@Column(name="discount")
+	private Integer discount;
 	
 	@Column(name="image_url")
 	private String image;

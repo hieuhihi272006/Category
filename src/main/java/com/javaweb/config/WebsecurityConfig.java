@@ -55,13 +55,15 @@ public class WebsecurityConfig{
 							.requestMatchers(POST,"/api/pay/momo/ipn").permitAll()
 						
 							
-							.requestMatchers(POST,
-									String.format("%s/cart", prefix)).hasAnyRole("USER")
+							 
 							.requestMatchers(POST, "/api/pay/momo/order").hasAnyRole("USER")
-							
-							
-							.requestMatchers(GET ,
-									String.format("%s/test", prefix)).hasAnyRole("USER")
+							.requestMatchers(GET,
+									String.format("%s/profile", prefix)).hasAnyRole("USER")
+							.requestMatchers(GET,
+									String.format("%s/cart", prefix)).hasAnyRole("USER")
+							.requestMatchers(DELETE,
+									String.format("%s/cart/**", prefix)).hasAnyRole("USER")
+							 
 							
 							
 							.requestMatchers(GET ,

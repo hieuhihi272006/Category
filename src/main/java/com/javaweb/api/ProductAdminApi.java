@@ -25,7 +25,6 @@ import com.javaweb.model.entity.ColorEntity;
 import com.javaweb.model.entity.SizeEntity;
 import com.javaweb.model.entity.SupplierEntity;
 import com.javaweb.model.response.ImportReceiptResponse;
-import com.javaweb.model.response.OrderBuyResponse;
 import com.javaweb.model.response.ProductResponse;
 import com.javaweb.repository.BrandRepository;
 import com.javaweb.repository.ColorRepository;
@@ -147,10 +146,10 @@ public class ProductAdminApi {
 	}
 	
 	
-	@PutMapping(value = "/product/{id}")
-	public ResponseEntity<?> deleteProduct(@PathVariable Long id){	
-		adminService.deleteProduct(id);
-		return ResponseEntity.ok("Xóa sản phẩm thành công");
+	@PutMapping(value = "/status")
+	public ResponseEntity<?> statusProduct(@RequestParam(name = "id") Long id , @RequestParam(name = "status") boolean status){	
+		adminService.statusProduct(id,status);
+		return ResponseEntity.ok("done");
 	}
 	
 	@GetMapping(value = "/product/{id}")
@@ -173,18 +172,17 @@ public class ProductAdminApi {
 		}
 	}
 
-	@GetMapping(value = "/order")
-	public ResponseEntity<?> historyOrder(@RequestParam(name="startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			   @RequestParam(name="endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate){
-		if(startDate.isAfter(endDate)) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Ngày bắt đầu không được sau ngày kết thúc");
-		}
-		List<OrderBuyResponse> orderBuyEntities = adminService.historyOrder(startDate, endDate);
-		return ResponseEntity.ok(orderBuyEntities);
-	}
+//	@GetMapping(value = "/order")
+//	public ResponseEntity<?> historyOrder(@RequestParam(name="startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+//			   @RequestParam(name="endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate){
+//		if(startDate.isAfter(endDate)) {
+//			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Ngày bắt đầu không được sau ngày kết thúc");
+//		}
+//		List<OrderBuyResponse> orderBuyEntities = adminService.historyOrder(startDate, endDate);
+//		return ResponseEntity.ok(orderBuyEntities);
+//	}
 
 
-	
 	@GetMapping(value = "/code")
 	public ResponseEntity<?> searchByCode(@RequestParam(name = "code") String code){
 		ProductResponse product = adminService.searchByCode(code);

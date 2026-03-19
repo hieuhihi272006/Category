@@ -65,7 +65,11 @@ public class UserEntity implements UserDetails {
 	@Column(name="email")
 	private String email;
 	
+	@Column(name = "image")
+	private String image;
+	
 	@ManyToMany(fetch = FetchType.LAZY)
+//	@Builder.Default
 	@JoinTable(name = "account_role" , 
 									joinColumns = @JoinColumn(name = "account_id" , nullable = false),
 									inverseJoinColumns = @JoinColumn(name = "role_id" , nullable = false))

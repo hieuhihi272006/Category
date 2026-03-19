@@ -1,6 +1,6 @@
 package com.javaweb.model.response;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +11,8 @@ public class OrderBuyResponse{
 	
 	private String code;
 	private String status;
+	private LocalDate createdAt;
 	private String paymentMethod;
-	private String note;
-	private BigDecimal price;
-	private String address;
-	private String nameUser;
-	private String numberPhone;
+	private Long price;
+
 }

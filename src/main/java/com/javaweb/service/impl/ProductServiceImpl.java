@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import com.javaweb.converter.ProductConverter;
 import com.javaweb.customException.ResourceNotFoundException;
 import com.javaweb.customException.UserNotFoundException;
 import com.javaweb.model.builder.ProductBuilder;
-import com.javaweb.model.dto.OrderProductDTO;
+ 
 import com.javaweb.model.entity.CartEntity;
 import com.javaweb.model.entity.CartItemEntity;
 import com.javaweb.model.entity.ProductEntity;
@@ -52,10 +53,12 @@ public class ProductServiceImpl implements ProductService{
 	private ModelMapper modelMapper;
 	
 	@Override
-	public FormResponse search(Map<String, Object> params , List<Integer> brands) {
+	public FormResponse search(Map<String, Object> params , List<Integer> brands) throws Exception{
 		// TODO Auto-generated method stub
 		ProductBuilder productBuilder = productConverter.toProductBuilder(params,brands);
+		
 		List<ProductEntity> listProductEntity = productRepository.findAll(ProductSpecs.withFilter(productBuilder));
+		
 		List<ProductResponse> listProduct = productConverter.toProductResponse(listProductEntity);
 		
 		List<BrandResponse> listBrandResponse = new ArrayList<>();
@@ -90,41 +93,53 @@ public class ProductServiceImpl implements ProductService{
 		return result;
 	}
 
+//	@Override
+//	@Transactional
+//	public void orderProduct(OrderProductDTO orderProduct, Integer id) {
+//		// TODO Auto-generated method stub
+//		CartEntity cartEntity = cartRepository.findByUser_Id(Long.valueOf(id))
+//		        .orElseGet(() -> {
+//		        	CartEntity newCartEntity = new CartEntity(); 
+//		        	UserEntity user = userRepository.findById(Long.valueOf(id)).orElseThrow(() -> new UserNotFoundException("Not found user"));
+//		        	newCartEntity.setUser(user);
+//		        	return newCartEntity;
+//		        	});
+//		
+//		cartRepository.save(cartEntity);
+//		ProductVariantEntity productVariantEntity = productVariantRepository.findById(Long.valueOf(orderProduct.getVariantId())).orElseThrow(() -> new ResourceNotFoundException("Not found variant"));
+//		Optional<CartItemEntity> cartItem = cartItemRepository.findByCart_IdAndVariant_Id(cartEntity.getId(), orderProduct.getVariantId());
+//		
+//		if(cartItem.isPresent()) {
+//			CartItemEntity item = cartItem.get();
+//			item.setQuantity(orderProduct.getQuantity() + item.getQuantity());
+//			cartItemRepository.save(item);
+//		}
+//		else {
+//			CartItemEntity cartItemEntity = new CartItemEntity();
+//			cartItemEntity.setVariant(productVariantEntity);
+//			cartItemEntity.setCart(cartEntity);
+//			cartItemEntity.setPrice(orderProduct.getPrice());
+//			cartItemEntity.setQuantity(orderProduct.getQuantity());
+//			cartItemRepository.save(cartItemEntity);
+//		}
+//	}
+
+	
 	@Override
 	@Transactional
-	public void orderProduct(OrderProductDTO orderProduct, Integer id) {
-		// TODO Auto-generated method stub
-		CartEntity cartEntity = cartRepository.findByUser_Id(Long.valueOf(id))
-		        .orElseGet(() -> {
-		        	CartEntity newCartEntity = new CartEntity(); 
-		        	UserEntity user = userRepository.findById(Long.valueOf(id)).orElseThrow(() -> new UserNotFoundException("Not found user"));
-		        	newCartEntity.setUser(user);
-		        	return newCartEntity;
-		        	});
+	public String test(Long id) throws Exception{
+		// TODO Auto-generated method stub	
+		ProductVariantEntity p = productVariantRepository.findByIdForUpdate(id);
 		
-		cartRepository.save(cartEntity);
-		ProductVariantEntity productVariantEntity = productVariantRepository.findById(Long.valueOf(orderProduct.getVariantId())).orElseThrow(() -> new ResourceNotFoundException("Not found variant"));
-		Optional<CartItemEntity> cartItem = cartItemRepository.findByCart_IdAndVariant_Id(cartEntity.getId(), orderProduct.getVariantId());
+		Thread.sleep(10000);
 		
-		if(cartItem.isPresent()) {
-			CartItemEntity item = cartItem.get();
-			item.setQuantity(orderProduct.getQuantity() + item.getQuantity());
-			cartItemRepository.save(item);
+		if(p.getQuantity() <= 0) {
+			throw new RuntimeException("Het");
 		}
-		else {
-			CartItemEntity cartItemEntity = new CartItemEntity();
-			cartItemEntity.setVariant(productVariantEntity);
-			cartItemEntity.setCart(cartEntity);
-			cartItemEntity.setPrice(orderProduct.getPrice());
-			cartItemEntity.setQuantity(orderProduct.getQuantity());
-			cartItemRepository.save(cartItemEntity);
-		}
-	}
-
-	@Override
-	public String test(Long id) {
-		// TODO Auto-generated method stub		
-		return null;
+		
+		p.setQuantity(p.getQuantity() - 1);
+		productVariantRepository.save(p);
+		return "ok";
 	}
 
 

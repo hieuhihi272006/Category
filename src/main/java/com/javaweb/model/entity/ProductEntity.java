@@ -1,14 +1,24 @@
 package com.javaweb.model.entity;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.persistence.*;
 
 @Setter
 @Getter
@@ -28,10 +38,13 @@ public class ProductEntity {
 	private String description;
 	@Column(name = "rating")
 	private Double rating;
-	@Column(name = "price")
-	private Long price;
-	@Column(name="discount")
-	private Integer discount;
+
+	@Column(name = "min_price")
+	private Long minPrice;
+	
+	@Column(name = "max_price")
+	private Long maxPrice;
+	
 	@Column(name="product_code")
 	private String productCode;
 	@Column(name="image_url")
@@ -39,6 +52,15 @@ public class ProductEntity {
 	
 	@Column(name="is_delete")
 	private boolean isDelete;
+	
+	@Column(name="min_original_price")
+	private Long originalPrice;
+	
+	@Column(name="min_discount_percent")
+	private Integer discountPercent;
+	
+	@Column(name="total_quantity")
+	private Integer totalQuantity;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")

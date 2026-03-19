@@ -14,8 +14,8 @@ public interface AdminService {
 	void addProducts(ImportDetailDTO importDTO);
 	List<ImportReceiptResponse> historyImport(LocalDate startDate , LocalDate endDate);
 	void editProduct(ProductResponse product);
-	List<OrderBuyResponse> historyOrder(LocalDate startDate , LocalDate endDate);
+//	List<OrderBuyResponse> historyOrder(LocalDate startDate , LocalDate endDate);
 	List<ProductResponse> search(String keyword);
-	void deleteProduct(Long id);
+	void statusProduct(Long id , boolean status);
 	ProductResponse searchByCode(String code);
 }

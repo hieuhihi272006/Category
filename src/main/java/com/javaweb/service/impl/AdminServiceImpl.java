@@ -28,21 +28,17 @@ import com.javaweb.model.response.ImportReceiptResponse;
 import com.javaweb.model.response.OrderBuyResponse;
 import com.javaweb.model.response.ProductResponse;
 import com.javaweb.model.response.ProductVariantResponse;
-import com.javaweb.repository.BrandRepository;
-import com.javaweb.repository.ColorRepository;
-import com.javaweb.repository.ImportReceiptRepository;
-import com.javaweb.repository.OrderBuyRepository;
-import com.javaweb.repository.ProductRepository;
-import com.javaweb.repository.ProductVariantRepository;
-import com.javaweb.repository.SizeRepository;
-import com.javaweb.repository.SupplierRepository;
+import com.javaweb.repository.*;
 import com.javaweb.repository.specification.ProductSpecs;
 import com.javaweb.service.AdminService;
-import com.javaweb.utils.MapUtil;
+
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @Service
 public class AdminServiceImpl implements AdminService{
+
+
 	
 	@Autowired
 	private ProductConverter productConverter;
@@ -64,7 +60,9 @@ public class AdminServiceImpl implements AdminService{
 	private ModelMapper modelMapper;
 	@Autowired
 	private OrderBuyRepository orderBuyRepository;
-
+	@Autowired
+	private EntityManager entityManager;
+  
 	
 	
 	@Override
@@ -110,7 +108,7 @@ public class AdminServiceImpl implements AdminService{
 			ProductEntity newProduct = new ProductEntity();
 			newProduct.setProductCode(importDTO.getProductCode());
 			newProduct.setName(importDTO.getName());
-			newProduct.setPrice(0L);
+//			newProduct.setPrice(0L);
 			productRepository.save(newProduct);
 			if(importDTO.getImportVariant() != null) {
 				for(ImportVariantDTO it : importDTO.getImportVariant()) {
@@ -205,46 +203,82 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public void editProduct(ProductResponse product) {
 		// TODO Auto-generated method stub
+
 		ProductEntity newProduct = modelMapper.map(product, ProductEntity.class);
+
+		BrandEntity brand = new BrandEntity();
+		brand.setId(product.getBrandId());
+		brand.setName(product.getBrandName());
+		newProduct.setBrand(brand);
+		
+		Integer quantity = 0;
+		Long minPrice = Long.MAX_VALUE ;
+		Long maxPrice = Long.MIN_VALUE;
+		Long minPriceOriginal = 0L;
+		Integer discount = 0;
+		
 		List<ProductVariantEntity> listVariant = new ArrayList<>();
 		for(ProductVariantResponse it : product.getVariants()) {
 			ProductVariantEntity variant = modelMapper.map(it, ProductVariantEntity.class);
-			variant.setPrice(it.getPrice());
-			variant.setQuantity(it.getQuantity());
+			quantity += variant.getQuantity();
 			
-			Integer idSize = MapUtil.getObject(it.getSizes(),"id",Integer.class);
-			SizeEntity size = sizeRepository.findById(idSize);
+			Long price = it.getPrice() - it.getPrice() * it.getDiscount() / 100;
+			if(price < minPrice) {
+				minPrice = price;
+				minPriceOriginal = it.getPrice();
+				discount = it.getDiscount();
+			}
 			
-			Integer idColor = MapUtil.getObject(it.getColors(),"id",Integer.class);
-			ColorEntity color = colorRepository.findById(idColor);
+			if(price > maxPrice) {
+				maxPrice = price;
+			}
 			
-			variant.setColor(color);
-			variant.setSize(size);
-			variant.setProduct(newProduct);
+			
+			if(it.getSizes().get("id") != null) {
+				Integer sizeId = Integer.valueOf(it.getSizes().get("id").toString());
+				SizeEntity size = entityManager.getReference(SizeEntity.class, sizeId);
+				size.setName(it.getSizes().get("name").toString());
+				variant.setSize(size);
+			}
+
+			if(it.getColors().get("id") != null) {
+				Integer colorId = Integer.valueOf(it.getColors().get("id").toString());
+				ColorEntity color = entityManager.getReference(ColorEntity.class, colorId);
+				color.setName(it.getColors().get("name").toString());
+				variant.setColor(color);
+			}
 			listVariant.add(variant);
+			variant.setProduct(newProduct);
 		}
-		BrandEntity brand = brandRepository.findById(product.getBrandId());
+		
 		newProduct.setProductVariants(listVariant);
-		newProduct.setBrand(brand);
+		newProduct.setTotalQuantity(quantity);
+		newProduct.setMinPrice(minPrice);
+		newProduct.setMaxPrice(maxPrice);
+		newProduct.setDiscountPercent(discount);
+		newProduct.setOriginalPrice(minPriceOriginal);
+		
 		productRepository.save(newProduct);
+		
+		
 	}
 	
-//	Sua lai
-	@Override
-	public List<OrderBuyResponse> historyOrder(LocalDate startDate, LocalDate endDate) {
-		// TODO Auto-generated method stub
-		List<OrderBuyEntity> orderBuyEntities = orderBuyRepository.findByCreatedAtBetween(startDate, endDate);
-		List<OrderBuyResponse> buyResponses = new ArrayList<>();
-		for(OrderBuyEntity it : orderBuyEntities){
-			OrderBuyResponse item = modelMapper.map(it, OrderBuyResponse.class);
-			item.setCode("MD"+String.valueOf(it.getId()));
-			item.setNameUser(it.getUser().getName());
-			item.setAddress(it.getUser().getAddress());
-			item.setNumberPhone(it.getUser().getPhoneNumber());
-			buyResponses.add(item);
-		}
-		return buyResponses;
-	}
+
+//	@Override
+//	public List<OrderBuyResponse> historyOrder(LocalDate startDate, LocalDate endDate) {
+//		// TODO Auto-generated method stub
+//		List<OrderBuyEntity> orderBuyEntities = orderBuyRepository.findByCreatedAtBetween(startDate, endDate);
+//		List<OrderBuyResponse> buyResponses = new ArrayList<>();
+//		for(OrderBuyEntity it : orderBuyEntities){
+//			OrderBuyResponse item = modelMapper.map(it, OrderBuyResponse.class);
+//			item.setCode("MD"+String.valueOf(it.getId()));
+//			item.setNameUser(it.getUser().getName());
+//			item.setAddress(it.getUser().getAddress());
+//			item.setNumberPhone(it.getUser().getPhoneNumber());
+//			buyResponses.add(item);
+//		}
+//		return buyResponses;
+//	}
 
 	@Transactional
 	@Override
@@ -252,15 +286,13 @@ public class AdminServiceImpl implements AdminService{
 		// TODO Auto-generated method stub
 		List<ProductResponse> productResponses = new ArrayList<>();
 		if(keyword == null || keyword.trim().isEmpty()) {
-			List<ProductEntity> productsByAll = productRepository.findAllByIsDelete(false);
+			List<ProductEntity> productsByAll = productRepository.findAll();
 			productResponses = productConverter.toProductResponse(productsByAll);
 		}
 		else {
-			ProductEntity productsByCode = productRepository.findByProductCodeExact(keyword ).orElse(null);
+			ProductEntity productsByCode = productRepository.findByProductCode(keyword).orElse(null);
 			if(productsByCode == null) {
-				ProductBuilder productBuilder = new ProductBuilder();
-				productBuilder.setName(keyword);
-				List<ProductEntity> productsByName = productRepository.findAll(ProductSpecs.withFilter(productBuilder));
+				List<ProductEntity> productsByName = productRepository.findByName(keyword);
 				productResponses = productConverter.toProductResponse(productsByName);
 			}
 			else {
@@ -274,17 +306,17 @@ public class AdminServiceImpl implements AdminService{
 
 	@Override
 	@Transactional
-	public void deleteProduct(Long id) {
+	public void statusProduct(Long id, boolean status) {
 		// TODO Auto-generated method stub
 		ProductEntity product = productRepository.findById(id).get();
-		product.setDelete(true);
+		product.setDelete(status);
 		productRepository.save(product);
 	}
 
 	@Override
 	public ProductResponse searchByCode(String code) {
 		// TODO Auto-generated method stub
-		ProductEntity product = productRepository.findByProductCodeExact(code).orElse(null);
+		ProductEntity product = productRepository.findByProductCode(code).orElse(null);
 		ProductResponse productResponse = new ProductResponse();
 		if(product != null) {
 			productResponse = modelMapper.map(product,ProductResponse.class);

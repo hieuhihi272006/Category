@@ -15,12 +15,13 @@ public interface ProductRepository extends JpaRepository<ProductEntity , Long> ,
 //	Optional<ProductEntity> findByProductCode(String code);
 	Optional<ProductEntity> findByProductCodeAndIsDelete(String code , boolean isDelete);
 	
-	@Query(
-		    value = "SELECT * FROM product p WHERE BINARY p.product_code = :code AND p.is_delete = false",
-		    nativeQuery = true
-		)
-	Optional<ProductEntity> findByProductCodeExact(@Param("code") String code);
+//	@Query(
+//		    value = "SELECT * FROM product p WHERE BINARY p.product_code = :code AND p.is_delete = false",
+//		    nativeQuery = true
+//		)
+//	Optional<ProductEntity> findByProductCodeExact(@Param("code") String code);
+	Optional<ProductEntity> findByProductCode(String code);
 	
-	List<ProductEntity> findAllByIsDelete(boolean isDelete);
+	List<ProductEntity> findAllByIsDelete(boolean isDelet);
 
 }

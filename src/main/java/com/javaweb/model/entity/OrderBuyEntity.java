@@ -1,8 +1,6 @@
 package com.javaweb.model.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +39,9 @@ public class OrderBuyEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id ;
+	
+	@Column(name = "code")
+	private String code;
 	
 	@Column(name="status")
 	private String status;

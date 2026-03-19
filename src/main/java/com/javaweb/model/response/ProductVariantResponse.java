@@ -1,5 +1,6 @@
 package com.javaweb.model.response;
 import java.util.Map;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ public class ProductVariantResponse {
 	private Long price ;
 	@NotNull(message="Quantity is required")
 	private Integer quantity;
+	private Integer discount;
 	private String image;
 	private Map<String,Object> colors;
 	private Map<String,Object> sizes;

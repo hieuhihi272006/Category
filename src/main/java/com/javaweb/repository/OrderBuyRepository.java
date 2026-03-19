@@ -8,5 +8,5 @@ import com.javaweb.model.entity.OrderBuyEntity;
 public interface OrderBuyRepository extends JpaRepository<OrderBuyEntity, Long>{
 	List<OrderBuyEntity> findByCreatedAtBetween(LocalDate startDate , LocalDate endDate);
 	
-	List<OrderBuyEntity> findAllByUser_Id(Long Id);
+	List<OrderBuyEntity> findAllByUser_Id(Integer Id);
 }
